@@ -12,7 +12,7 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Sprite Movement")
 
 #Load the image sprite
-sprite_image = pygame.transform.scale(pygame.image.load("images/sprite.png"),(100,100))
+sprite_image = pygame.transform.scale(pygame.image.load("images/EagleSprite.jpg"),(100,100))
 sprite_rect = sprite_image.get_rect()
 sprite_speed = 5
 
@@ -21,12 +21,12 @@ sprite_rect.x = screen_width // 2 - sprite_rect.width // 2
 sprite_rect.y = screen_height // 2 - sprite_rect.height // 2
 
 class Pokemon:
-    def __init__(self, hp, name, moves, sprite):
+    def __init__(self, hp, name, moves, sprite,potions):
       self.hp = hp
       self.name = name
       self.moves = moves
       self.sprite = sprite
-    
+      self.potions = potions #amount of potions
     def attack(self, other, attack):
       if(random.randint(0,100)<=attack.accuracy):
         for i in range(10):
@@ -35,11 +35,21 @@ class Pokemon:
         for i in range(10):
           self.sprite.x-=2
           time.wait(.05)
-        other.hp -= attack.damage+
-         
-        
-      
-          
+        other.hp -= attack.damage
+      else:
+        display_text(attack.name + 'missed the opponent!')
+    def itemuse(self):
+      self.potions-=1
+       
+
+def display_text(text):
+   red = (255, 0, 0)
+   display_surface = pygame.display.set_mode((400, 400))
+   font = pygame.font.Font('freesansbold.ttf', 32)
+   text = font.render('MISS', True, red) 
+   textRect = text.get_rect()      
+   textRect.center = (500, 200)   
+   display_surface.blit(text, textRect)
           
 #DISPLAYING TEXT
 #font = pygame.font.Font('freesansbold.ttf', 32)
@@ -54,7 +64,7 @@ class Pokemon:
 # copying the text surface object
 # to the display surface object
 # at the center coordinate.
-#display_surface.blit(text, textRect)
+#
 
 class Attack:
     def init(self, accuracy, damage, name):
