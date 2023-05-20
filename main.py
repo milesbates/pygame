@@ -57,12 +57,12 @@ class UI:
     self.rect.x = 0
     self.rect.y = 700
   
-  def setImage(self, image):
-     self.sprite = pygame.transform.scale(pygame.image.load("images/GUI/"+image),(1000,300))
-     self.image = image
-     self.rect = self.image.get_rect()
+  # def setImage(self, image):
+  #    self.sprite = pygame.transform.scale(pygame.image.load("images/GUI/"+image),(1000,300))
+  #    self.image = image
+  #    self.rect = self.image.get_rect()
 
-  def onClick(self, x, y):
+  def onClick(self, x, y, poke, otherpoke):
     if(self.type == "main" and y <= 850 and y >= 700 ):
               #fight
       self.type = "fight"
@@ -82,22 +82,31 @@ class UI:
       print('top left attack')
       ui.moveUI('MainUI.png') 
       self.type = 'main'
+      poke.attack(otherpoke, poke.moves[0])
+      print(otherpoke.hp)
     elif(self.type == 'fight' and y<=850 and y>=700 and x >=500 and x <= 1000):  
       print('top right attack')  
       ui.moveUI('MainUI.png')
       self.type ='main'
+      poke.attack(otherpoke, poke.moves[1])
+      print(otherpoke.hp)
     elif(self.type == 'fight' and y<=1000 and y >= 850 and x >=0 and x <= 500):
        print('bottom left attack')
        ui.moveUI('MainUI.png')
        self.type = 'main'
+       poke.attack(otherpoke, poke.moves[2])
+       print(otherpoke.hp)
     elif(self.type == 'fight' and y<=1000 and y >= 850 and x >=500 and x <= 1000):
        print('bottom right attack')
        ui.moveUI('MainUI.png') 
        self.type ='main'
+       poke.attack(otherpoke, poke.moves[3])
+       print(otherpoke.hp)
     elif(self.type == "bag" and y <= 850 and y >= 700 and x >=0 and x <= 500):
        print('potion used')
        ui.moveUI('MainUI.png')
        self.type = 'main'
+       poke.hp += 20
        
          
          
@@ -166,7 +175,10 @@ while True:
           if mouse_presses[0]:
             pos = pygame.mouse.get_pos()
             print(pos)
-            ui.onClick(pos[0],pos[1])
+            ui.onClick(pos[0],pos[1],Eagle, Lion)
+            time.wait(0.5)
+            Lion.attack(Eagle,Lion.moves[0]) #maybe random number for moves??
+            display_text('Lion attacked',screen)
             
 
     # Draw the sprite and update the screen
