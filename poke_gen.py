@@ -33,16 +33,16 @@ def genImage(type):
         print('Image Couldn\'t be retrieved')
     
 def genMoves(type):
-    import os
-    import openai
-    completion = openai.ChatCompletion.create(
-    model="gpt-3.5-turbo",
-    messages=[
-        {"role": "system", "content": f"Imagine you are creating new Pokemon moves for a {type}. Please generate four moves, formatted as a list separated by commas [with no period at the end and no linebreaks], with solely their name."}
-    ]
-    )
+    rv = "\n"
+    while "\n" in rv:
+        rv = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": f"Imagine you are creating new Pokemon moves for a {type}. Please generate four moves, formatted as a list separated by commas with no periods and no linebreaks, with solely the name of the move."}
+        ]
+        ).choices[0].message["content"]
 
-    print(completion.choices[0].message)
+    return rv
 
     
 
