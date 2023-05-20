@@ -43,14 +43,14 @@ class Pokemon:
       self.potions-=1
        
 
-def display_text(text):
+def display_text(text, screen):
    red = (255, 0, 0)
-   display_surface = pygame.display.set_mode((400, 400))
+   
    font = pygame.font.Font('freesansbold.ttf', 32)
-   text = font.render('MISS', True, red) 
+   text = font.render(text, True, red) 
    textRect = text.get_rect()      
    textRect.center = (500, 200)   
-   display_surface.blit(text, textRect)
+   screen.blit(text, textRect)
           
 #DISPLAYING TEXT
 #font = pygame.font.Font('freesansbold.ttf', 32)
@@ -78,31 +78,48 @@ class Attack:
 
 
 EagleMoves = [Attack(accuracy = 95, damage = 20, name = "Scratch"), Attack(accuracy = 70, damage = 40, name = "Feather Frenzy"), Attack(accuracy = 85, damage = 30, name = "Sonic Screech"), Attack(accuracy = 90, damage = 25, name = "Wind Talons")]
-Eagle = Pokemon(hp = 100, name = "ESD Eagle", moves = EagleMoves, sprite = pygame.transform.scale(pygame.image.load("images/Sprites/EagleSprite.jpg"),(100,100)),potions = 2)
+Eagle = Pokemon(hp = 100, name = "ESD Eagle", moves = EagleMoves, sprite = pygame.transform.scale(pygame.image.load("images/Sprites/EagleSprite.jpg"),(250,250)),potions = 2)
 
 LionMoves = [Attack(accuracy = 80, damage = 35, name ='Royal Roar'), Attack(accuracy = 65, damage = 45, name ='Savanna Slam'), Attack(accuracy = 100, damage = 15, name ='Kings Claw'), Attack(accuracy = 50, damage = 50, name ='Pride Pounce')]
 Lion = Pokemon(hp = 100, name = "St. Marks Lion", moves = LionMoves, sprite = pygame.transform.scale(pygame.image.load("images/Sprites/LionSprite.jpg"),(100,100)), potions = 0)
-ui = pygame.transform.scale(pygame.image.load("images/GUI/MainUI.png"),(1000,300)).get_rect()
+ui = Pokemon(hp = 0, name = 'ui', moves = [], sprite = pygame.transform.scale(pygame.image.load("images/GUI/MainUI.png"),(1000,300)), potions = 0)
 
 
 
+DisplayList = []
 def gameStart(pMon1 = Eagle, pMon2 = Lion):
    pMon1.rect.x = 200
-   pMon1.rect.y = 650
+   pMon1.rect.y = 400
    pMon2.rect.x = 800
-   pMon2.rect.y = 650
+   pMon2.rect.y = 200
    
-   ui.x = 500
-   ui.y = 150
+   ui.rect.x = 0
+   ui.rect.y = 700
+   DisplayList = [[Eagle.sprite, Eagle.rect], [Lion.sprite,Lion.rect], [ui,ui.rect]]
    
 gameStart()
 
-#Game loop
+
+
+#display_text('TEST')
+
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+          mouse_presses = pygame.mouse.get_pressed()
+          if mouse_presses[0]:
+            pos = pygame.mouse.get_pos()
+            print(pos)
+            if(pos[1] <= 850 and pos[1] >= 700 ):
+               print('fight')#update ui
+            if(pos[1]<=1000 and pos[1] >= 850 and pos[0] >=0 and pos[0] <= 500):
+               print('bag')
+            if(pos[1]<=1000 and pos[1] >= 850 and pos[0] >=500 and pos[0] <= 1000):
+               print('run')
+               
 
     # Move the sprite
     # keys = pygame.key.get_pressed()
@@ -117,7 +134,13 @@ while True:
 
     # Draw the sprite and update the screen
     screen.fill((255, 255, 255))
-    #screen.blit(sprite_image, sprite_rect) thing to display images (image, image.rect)
+    # for im in DisplayList:
+    #   screen.blit(im[0], im[1])
+    
+    screen.blit(Eagle.sprite, Eagle.rect)
+    screen.blit(Lion.sprite, Lion.rect)
+    screen.blit(ui.sprite, ui.rect)
+    display_text('TEST', screen)
     pygame.display.flip()
 
 #What graphics/UI stuff we need
