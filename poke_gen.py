@@ -2,6 +2,7 @@ import openai
 import requests
 import os
 import shutil
+from PIL import Image
 
 openai.api_key = "key"
 
@@ -13,7 +14,7 @@ def makePokemon(type):
 def genImage(type):
 
     # The text prompt you want to use to generate an image
-    prompt = f"A {type} in the style of pokemon pixel art jpg"
+    prompt = f"A {type} in the style of pokemon pixel art png"
 
     # Generate an image
     response = openai.Image.create(
@@ -26,11 +27,24 @@ def genImage(type):
     res = requests.get(url, stream = True)
     dir_path = "images\AISprites"
     if res.status_code == 200:
-        with open(os.path.join(dir_path,f'{type}Sprite.jpg'),'wb') as f:
+        with open(os.path.join(dir_path,f'{type}Sprite.png'),'wb') as f:
             shutil.copyfileobj(res.raw, f)
-        print(f'Image sucessfully Downloaded: {type}.jpg')
+        print(f'Image sucessfully Downloaded: {type}.png')
     else:
         print('Image Couldn\'t be retrieved')
+    image = Image.open(os.path.join(dir_path,f'{type}Sprite.png'))
+    image = image.convert('RGBA')
+    dat = image.getdata()
+    newDat = []
+
+    for item in dat:
+        if item[0] in list(range(235,256)):
+            newDat.append((255,255,255,0))
+        else:
+            newDat.append(item)
+    image.putdata(newDat)
+    image.save(os.path.join(dir_path,f'{type}Sprite.png'),"PNG")
+
     
 def genMoves(type):
     rv = "\n"

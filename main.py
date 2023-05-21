@@ -222,10 +222,10 @@ class Attack:
     
 
 EagleMoves = [Attack(accuracy = 95, damage = 20, name = "Scratch"), Attack(accuracy = 70, damage = 40, name = "Feather Frenzy"), Attack(accuracy = 85, damage = 30, name = "Sonic Screech"), Attack(accuracy = 90, damage = 25, name = "Wind Talons")]
-Eagle = Pokemon(hp = 100, name = "Eagle", moves = EagleMoves, sprite = pygame.transform.scale(pygame.image.load("images/Sprites/EagleSprite.jpg"),(250,250)),potions = 2)
+Eagle = Pokemon(hp = 100, name = "Eagle", moves = EagleMoves, sprite = pygame.transform.scale(pygame.image.load("images/Sprites/EagleSprite.png"),(180,180)),potions = 2)
 
 LionMoves = [Attack(accuracy = 80, damage = 35, name ='Royal Roar'), Attack(accuracy = 65, damage = 45, name ='Savanna Slam'), Attack(accuracy = 100, damage = 15, name ='Kings Claw'), Attack(accuracy = 50, damage = 50, name ='Pride Pounce')]
-Lion = Pokemon(hp = 100, name = "Lion", moves = LionMoves, sprite = pygame.transform.scale(pygame.image.load("images/Sprites/LionSprite.jpg"),(100,100)), potions = 0)
+Lion = Pokemon(hp = 100, name = "Lion", moves = LionMoves, sprite = pygame.transform.scale(pygame.image.load("images/Sprites/LionSprite.png"),(120,120)), potions = 0)
 
 
 ui = UI(image = 'GeneralUI.png', type="main", scale = (1000, 300))
@@ -233,6 +233,9 @@ hp1 = UI(image = 'HPBarSelf.png', scale = (200, 20))
 hp1background = UI(image = 'HPBackground.png', scale = (200, 20))
 hp2 = UI(image = 'HPBarOther.png', scale = (200, 20))
 hp2background = UI(image = 'HPBackground.png', scale = (200, 20))
+ArenaBackground = UI(image = 'Background.png', scale = (1000, 700))
+titlescreen = UI(image = 'MainMenu.png', scale = (1000,1000))
+pokeball = UI(image = 'ESD_Pokeball.png', scale = (1000,1000))
 
 
 pokeDisplay1 = Eagle
@@ -241,8 +244,8 @@ pokeDisplay2 = Lion
 def gameStart(pMon1 = Eagle, pMon2 = Lion):
    pMon1.rect.x = 200
    pMon1.rect.y = 400
-   pMon2.rect.x = 800
-   pMon2.rect.y = 200
+   pMon2.rect.x = 700
+   pMon2.rect.y = 250
    
    ui.rect.x = 0
    ui.rect.y = 700
@@ -254,13 +257,19 @@ def gameStart(pMon1 = Eagle, pMon2 = Lion):
    hp1background.rect.y = 0
    hp2background.rect.x = 0
    hp2background.rect.y = 50
+   titlescreen.rect.x = 0
+   titlescreen.rect.y = 0
+   pokeball.rect.x = 0
+   pokeball.rect.y = 0
+
+
   
 if(input("Would you like to use a custom-generated pokemon? (y/n) ") == "y"):
   nameAI = input("What type of pokemon would you like to generate?")
   moves = poke_gen.makePokemon(nameAI).split(", ")
   print(moves)
   AIMoves = [Attack(accuracy = 95, damage = 20, name = moves[0]), Attack(accuracy = 70, damage = 40, name = moves[1]), Attack(accuracy = 85, damage = 30, name = moves[2]), Attack(accuracy = 90, damage = 25, name = moves[3])]
-  AIPoke = Pokemon(hp = random.randint(80,120), name = nameAI, moves = AIMoves, sprite = pygame.transform.scale(pygame.image.load(f"images/AISprites/{nameAI}Sprite.jpg"),(250,250)),potions = 2)
+  AIPoke = Pokemon(hp = random.randint(80,120), name = nameAI, moves = AIMoves, sprite = pygame.transform.scale(pygame.image.load(f"images/AISprites/{nameAI}Sprite.png"),(250,250)),potions = 2)
   gameStart(pMon1 = AIPoke, pMon2 = Lion)
   pokeDisplay1, pokeDisplay2 = AIPoke, Lion
 else:
@@ -269,6 +278,14 @@ else:
 
 text_appear_time = None
 textapprtime2 = None
+
+
+screen.fill((255, 255, 255))
+screen.blit(pokeball.sprite, pokeball.rect)
+screen.blit(titlescreen.sprite, titlescreen.rect)
+
+pygame.display.flip()
+time.sleep(10)
 while True:
     screen.fill((255, 255, 255))
     # display_text(screen, '', 500, 200)
@@ -307,9 +324,12 @@ while True:
         ui.notif = ''
         ui.notif2 = ''
         text_appear_time = None
+        ui.displayUI()
     endtime = None
+    
     if(pokeDisplay1.hp <= 0):
-       display_text(screen, pokeDisplay1.name + " fainted!", 500, 200, (0,0,0))
+       display_text(screen, pokeDisplay1.name + " fainted!", 500, 100, (0,0,0))
+       
        endtime = pygame.time.get_ticks()
        
 
@@ -320,6 +340,7 @@ while True:
     if endtime is not None and pygame.time.get_ticks() - text_appear_time >= 5000:
        pygame.quit()
        sys.exit()
+    screen.blit(ArenaBackground.sprite, ArenaBackground.rect)
     screen.blit(pokeDisplay1.sprite, pokeDisplay1.rect)
     screen.blit(pokeDisplay2.sprite, pokeDisplay2.rect)
     screen.blit(ui.sprite, ui.rect)
